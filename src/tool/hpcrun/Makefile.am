@@ -121,6 +121,7 @@ endif
 
 if OPT_ENABLE_HPCRUN_DYNAMIC
   pkglib_LTLIBRARIES += libhpcrun.la
+  pkglib_LTLIBRARIES += libhpcrun_audit.la
   pkglib_LTLIBRARIES += libhpcrun_ga.la
   pkglib_LTLIBRARIES += libhpcrun_io.la
   pkglib_LTLIBRARIES += libhpcrun_memleak.la
@@ -446,7 +447,6 @@ MY_DYNAMIC_FILES = 			\
 	fnbounds/fnbounds_client.c	\
 	fnbounds/fnbounds_dynamic.c	\
 	monitor-exts/openmp.c		\
-	hpcrun_dlfns.c                  \
         custom-init-dynamic.c
 
 MY_STATIC_FILES = 			\
@@ -558,6 +558,9 @@ libhpcrun_la_SOURCES = 			\
 	$(MY_BASE_FILES)		\
 	$(MY_DYNAMIC_FILES)
 
+libhpcrun_audit_la_SOURCES =		\
+	audit/auditor.c
+
 libhpcrun_o_SOURCES = 			\
 	$(MY_BASE_FILES)		\
 	$(MY_STATIC_FILES)
@@ -611,6 +614,11 @@ libhpcrun_la_CPPFLAGS =			\
 if OPT_BGQ_BACKEND
   libhpcrun_la_CPPFLAGS += -I$(srcdir)/utilities/bgq-cnk
 endif
+
+libhpcrun_audit_la_CPPFLAGS =		\
+	$(MY_CPP_DEFINES)		\
+	$(MY_INCLUDE_DIRS)
+
 
 libhpcrun_o_CPPFLAGS =			\
 	-DHPCRUN_STATIC_LINK		\
@@ -727,6 +735,8 @@ OUR_LIBUNWIND_A = $(top_builddir)/src/extern/libunwind/libunwind.a
 OUR_LZMA_A = $(top_builddir)/src/extern/lzma/liblzma.a
 
 libhpcrun_la_LDFLAGS = -Wl,-Bsymbolic
+
+libhpcrun_audit_la_LDFLAGS = -Wl,-Bsymbolic -ldl
 
 libhpcrun_ga_la_LDFLAGS = -Wl,-Bsymbolic
 
